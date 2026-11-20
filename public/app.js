@@ -78,3 +78,6 @@ $('upload-button').addEventListener('click',()=>guard(async()=>{
 },'admin-msg'));
 if(localStorage.getItem('kng-request')){$('request-check').classList.remove('hidden');guard(checkRequest,'request-msg')}
 refreshStatus().catch(()=>{$('file-status').textContent='Serverstatus konnte nicht geladen werden.'});
+
+$('jump-key').addEventListener('click',()=> $('key-input').focus());
+$('jump-request').addEventListener('click',()=> $('request-name').focus());

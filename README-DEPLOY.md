@@ -17,11 +17,14 @@ Render Free bietet **keinen persistenten Datenspeicher**. Bei einem Neustart ode
 Der Client selbst ist eine **experimentelle, nicht im echten Minecraft 26.3 getestete** JAR. Zuerst in einem separaten Spielprofil testen. Kein offizielles Minecraft-Produkt. Vor öffentlichem Betrieb die rechtlichen Betreiberinformationen und die Datenschutzanforderungen prüfen.
 
 
-## Zweites Produkt: Texture Pack mit X-Ray
-- Im Shop erscheinen zwei Produkte: **KngArtusClient (JAR)** und **6-in-1 Texture Pack + X-Ray (ZIP)**.
-- Das Pack enthält Loading Screen, Zombie, Dark Lime GUI, Voice, MyTexturePack und X-Ray; **My Cape ist nicht enthalten**.
-- Im Admin-Bereich unter **JAR hochladen** das Produkt **Texture Pack** wählen und die Datei `KngArtusClient-6-in-1-TexturePack-MIT-XRAY-mc26.3.zip` hochladen.
-- Für beide Produkte getrennte einmalige Schlüssel erzeugen; auch Freigabeanfragen gelten jeweils nur für das gewählte Produkt.
-- Beide Produkte werden **kostenlos** per Key oder Admin-Freigabe geteilt. Zahlungsfunktionen sind nicht enthalten. Rechte an allen verwendeten Packs vor Weitergabe prüfen.
-- X-Ray nur auf Servern einsetzen, die es ausdrücklich erlauben. X-Ray-Effekt ist technisch nicht im echten Minecraft 26.3 getestet.
-- Nach **jedem kostenlosen Render-Neudeploy** hochgeladene ZIP/JAR, Keys und Anfragen prüfen. Ohne persistente Datenbank und Dateispeicher können sie verschwinden.
+## Zweites Produkt: 5er-Texture-Pack-Bundle (NEU, OHNE X-RAY)
+
+- Im Shop erscheinen zwei Produkte: **KngArtusClient (.jar)** und **5er-Texture-Pack-Bundle (.zip)**.
+- Das neue Bundle enthält: My Loading Screen, zombie-Ein_DonutYT, Dark Lime GUI, **My Voice Pack (1)** und **MyTexturePack (1)**.
+- **X-Ray und My Cape sind nicht enthalten**. Die beiden zuletzt hochgeladenen Packs ersetzen die vorherigen Varianten.
+- Aktuelle ZIP: `KngArtusClient-5er-Bundle-NEU-OHNE-XRAY-mc26.3.zip`.
+- **WICHTIG:** Der Texture-Pack-Download ist erst wieder verfügbar, wenn du dich im Admin-Bereich anmeldest und die neue ZIP unter **JAR hochladen → 5er-Texture-Pack-Bundle (.zip)** hochlädst. Der neue Dateiname des privaten Speichers verhindert, dass Besucher die alte X-Ray-Version erhalten.
+- Admin-Keys und persönliche Freigabeanfragen können weiterhin getrennt für Client und Texture Pack erstellt werden. Bestehende Texture-Pack-Keys bleiben mit dem Texture-Pack-Produkt verknüpft.
+- Beide Produkte werden derzeit **kostenlos** freigeschaltet; es gibt keine Zahlungsfunktion. Weitergabe nur, soweit die Nutzungsrechte der einzelnen Packs dies erlauben.
+- Render Free speichert Dateien und Keys nicht zuverlässig über Neustarts/Deploys hinweg. Für dauerhafte Nutzung ist persistenter Speicher nötig.
+- JSON und ZIP wurden geprüft, aber das Bundle nicht in einer laufenden Minecraft-26.3-Installation getestet.

@@ -15,6 +15,9 @@ p{line-height:1.65;color:#a9bcb0}p.lead{font-size:20px;max-width:610px}
 .cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:22px 0}
 .card{background:linear-gradient(145deg,#14261c,#0c1711);border:1px solid #254332;border-radius:22px;padding:27px}
 .icon{font-size:27px}.card p{min-height:72px}
+.product-card{transition:border-color .2s,background .2s}.product-card.selected{border-color:#78f4aa;background:linear-gradient(145deg,#173725,#0c1d13)}
+.product-card p{min-height:0}.product-card button{margin-top:10px}
+select{display:block;width:100%;background:#08130c;border:1px solid #345742;color:#f2fff7;border-radius:11px;padding:14px 15px;font:inherit;margin:7px 0 14px}
 input{width:100%;background:#08130c;border:1px solid #345742;color:#f2fff7;border-radius:11px;padding:14px 15px;font:inherit;margin:7px 0 14px;outline-color:#78f4aa}
 label{font-size:13px;color:#c9e7d5}form{margin-top:18px}
 small,.note{color:#8fa99a;font-size:13px}.message{padding:12px 15px;background:#193727;border:1px solid #3e7050;border-radius:11px;color:#caffdf;margin-top:14px;word-break:break-word}.message.error{background:#371919;border-color:#823e3e;color:#ffcece}
@@ -31,19 +34,31 @@ section{margin-bottom:45px}.foot{border-top:1px solid #254332;padding:25px 0;col
 <p class="lead">Hol dir den experimentellen KngArtusClient. Schalte deinen Download mit einem persönlichen Key frei oder stelle eine Anfrage an den Admin.</p>
 <div class="hero-actions"><button id="jump-key">Key eingeben</button><button class="secondary" id="jump-request">Freigabe anfragen</button></div>
 <p class="note">Experimentelle Version: Nicht vollständig in Minecraft getestet. Kein offizielles Minecraft-Produkt.</p></section>
+<section id="products"><div class="pill">Unsere Downloads</div><h2>Wähle dein Produkt</h2>
+<div class="cards">
+<article id="product-client" class="card product-card selected"><div class="icon">🎮</div><h2>KngArtusClient</h2>
+<p>Experimenteller Fabric-Client für Minecraft Java 26.3 · JAR-Datei. Diese Version wurde nicht vollständig im Spiel getestet.</p>
+<p class="pill">Kostenlos mit Freischalt-Key</p><button type="button" class="pick-product" data-pick="client">Client auswählen</button></article>
+<article id="product-texture" class="card product-card"><div class="icon">🎨</div><h2>6-in-1 Texture Pack + X-Ray</h2>
+<p>Loading Screen, Zombie, Dark Lime GUI, Voice, Werkzeuge/Totem und X-Ray in einer ZIP. Ohne den problematischen Cape-Shader.</p>
+<p class="pill">Kostenlos mit Freischalt-Key</p><button type="button" class="pick-product" data-pick="texture">Texture Pack auswählen</button></article>
+</div><p class="note">X-Ray nur im Einzelspieler oder auf Servern, die es ausdrücklich erlauben. Verteile nur Packs, für die du die nötigen Rechte besitzt.</p></section>
 <section class="cards"><article class="card"><div class="icon">🔑</div><h2>Key einlösen</h2><p>Du hast einen Key über WhatsApp bekommen? Gib ihn ein, um den Download freizuschalten.</p>
 <form id="key-form"><label for="key-input">Dein Zugangscode</label><input id="key-input" placeholder="KNG-XXXXXX-XXXXXX-XXXXXX-XXXXXX" autocomplete="off" required><button type="submit">Key einlösen</button></form><div id="key-msg"></div></article>
 <article class="card"><div class="icon">📩</div><h2>Persönliche Anfrage</h2><p>Schicke eine Freigabeanfrage. Der Admin sieht sie in seinem privaten Bereich und kann sie bestätigen oder ablehnen.</p>
 <form id="request-form"><label for="request-name">Spitzname (keine privaten Daten nötig)</label><input id="request-name" maxlength="32" placeholder="Zum Beispiel Alex" required><button type="submit">Anfrage senden</button></form><div id="request-msg"></div>
 <div id="request-check" class="hidden"><p>Prüfe hier den Status deiner Anfrage:</p><button class="secondary" id="check-button">Freigabe prüfen</button></div>
 </article></section>
-<section class="card"><h2>Dein Download</h2><p>Der Download ist nur nach einem gültigen Key oder einer bestätigten Anfrage möglich.</p><div id="file-status" class="note">Status wird geladen…</div><div style="margin-top:18px"><button id="download" disabled>JAR-Datei herunterladen</button></div></section>
+<section class="card"><h2>Dein Download: <span id="selected-product">KngArtusClient</span></h2><p>Für jedes Produkt brauchst du einen passenden Key oder eine eigene Freigabe. Die Datei wird nur nach Freischaltung angeboten.</p><div id="file-status" class="note">Status wird geladen…</div><div style="margin-top:18px"><button id="download" disabled>JAR-Datei herunterladen</button></div></section>
 <section class="card admin hidden" id="admin-panel"><h2>Admin-Bereich</h2>
 <div id="login-panel"><p>Nur der Betreiber kann Keys erstellen und Anfragen bearbeiten.</p><form id="login-form"><label for="admin-pass">Admin-Passwort</label><input id="admin-pass" type="password" autocomplete="current-password" required><button type="submit">Anmelden</button></form></div>
-<div id="admin-content" class="hidden"><div class="cards"><div><h2>Neue Keys</h2><form id="generate-form"><label for="key-count">Anzahl (1–20)</label><input id="key-count" type="number" min="1" max="20" value="1"><button type="submit">Keys generieren</button></form><pre class="details hidden" id="new-keys"></pre><p class="note">Keys werden nur einmal angezeigt. Kopiere sie für WhatsApp.</p></div>
-<div><h2>JAR hochladen</h2><p>Die Datei wird geschützt auf dem Server gespeichert, nicht bei GitHub.</p><input type="file" id="jar-picker" accept=".jar"><button id="upload-button">JAR hochladen</button></div></div>
+<div id="admin-content" class="hidden"><div class="cards"><div><h2>Neue Keys</h2><form id="generate-form"><label for="admin-key-product">Produkt für die Keys</label><select id="admin-key-product"><option value="client">KngArtusClient</option><option value="texture">6-in-1 Texture Pack + X-Ray</option></select>
+<label for="key-count">Anzahl (1–20)</label><input id="key-count" type="number" min="1" max="20" value="1"><button type="submit">Keys generieren</button></form><pre class="details hidden" id="new-keys"></pre><p class="note">Keys werden nur einmal angezeigt. Kopiere sie für WhatsApp.</p></div>
+<div><h2>JAR hochladen</h2><p>Die Dateien werden geschützt auf dem Server gespeichert, nicht öffentlich auf GitHub.</p>
+<label for="admin-upload-product">Produkt auswählen</label><select id="admin-upload-product"><option value="client">KngArtusClient (.jar)</option><option value="texture">6-in-1 Texture Pack (.zip)</option></select>
+<input type="file" id="jar-picker" accept=".jar,.zip"><button id="upload-button">Produktdatei hochladen</button></div></div>
 <h2>Offene Anfragen</h2><div id="pending-list"></div>
 <h2 style="margin-top:25px">Keys</h2><div id="keys-list"></div></div>
 <div id="admin-msg"></div></section>
-<footer class="foot">KngArtusClient ist ein unabhängiges Fanprojekt · Keine Verbindung zu Mojang oder Microsoft · Keine Online-Zahlungen. © 2026 KngArtusClient</footer>
+<footer class="foot">KngArtusClient ist ein unabhängiges Fanprojekt · Keine Verbindung zu Mojang oder Microsoft · Keine Online-Zahlungen · Nur kostenlose Freischaltungen · © 2026 KngArtusClient</footer>
 </main><script src="/app.js" defer></script></body></html>

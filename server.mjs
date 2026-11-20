@@ -52,7 +52,7 @@ function originOK(req){
   return req.headers.origin==='https://'+host || req.headers.origin==='http://'+host;
 }
 const mime = p => p.endsWith('.css')?'text/css':p.endsWith('.js')?'application/javascript':'text/html';
-const publicly = {'/':'public/index.html','/index.html':'public/index.html'};
+const publicly = {'/':'public/index.html','/index.html':'public/index.html','/app.js':'public/app.js'};
 const server=http.createServer(async(req,res)=>{
   try {
     const pathname=new URL(req.url,'http://local').pathname;

@@ -81,7 +81,7 @@ const server=http.createServer(async(req,res)=>{
       if(limit(req,'request',4,3600000))return reply(res,429,{error:'Zu viele Anfragen.'});
       const b=JSON.parse((await getBody(req)).toString()||'{}');
       const name=String(b.name||'').trim().slice(0,32);
-      if(!/^[\\p{L}\\p{N} ._-]{2,32}$/u.test(name))return reply(res,400,{error:'Bitte einen Spitznamen von 2–32 Zeichen eingeben.'});
+      if(!/^[\p{L}\p{N} ._-]{2,32}$/u.test(name))return reply(res,400,{error:'Bitte einen Spitznamen von 2–32 Zeichen eingeben.'});
       const id='KNG-'+crypto.randomBytes(5).toString('hex').toUpperCase(), token=rand(24);
       state.requests.push({id,name,tokenHash:hash(token),status:'pending',created:Date.now()});save();
       return reply(res,200,{id,token,status:'pending'});

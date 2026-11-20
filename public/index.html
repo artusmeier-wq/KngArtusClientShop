@@ -29,7 +29,7 @@ section{margin-bottom:45px}.foot{border-top:1px solid #254332;padding:25px 0;col
 <header><div class="brand">KNG<span>ARTUS</span> CLIENT <span>·</span></div><button id="open-admin">Admin</button></header>
 <section class="hero"><div class="pill">Minecraft Java 26.3 · Fabric</div><h1>Dein Client.<br><span style="color:#78f4aa">Dein Zugang.</span></h1>
 <p class="lead">Hol dir den experimentellen KngArtusClient. Schalte deinen Download mit einem persönlichen Key frei oder stelle eine Anfrage an den Admin.</p>
-<div class="hero-actions"><button onclick="document.getElementById('key-input').focus()">Key eingeben</button><button class="secondary" onclick="document.getElementById('request-name').focus()">Freigabe anfragen</button></div>
+<div class="hero-actions"><button id="jump-key">Key eingeben</button><button class="secondary" id="jump-request">Freigabe anfragen</button></div>
 <p class="note">Experimentelle Version: Nicht vollständig in Minecraft getestet. Kein offizielles Minecraft-Produkt.</p></section>
 <section class="cards"><article class="card"><div class="icon">🔑</div><h2>Key einlösen</h2><p>Du hast einen Key über WhatsApp bekommen? Gib ihn ein, um den Download freizuschalten.</p>
 <form id="key-form"><label for="key-input">Dein Zugangscode</label><input id="key-input" placeholder="KNG-XXXXXX-XXXXXX-XXXXXX-XXXXXX" autocomplete="off" required><button type="submit">Key einlösen</button></form><div id="key-msg"></div></article>

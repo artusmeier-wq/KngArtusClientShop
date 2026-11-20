@@ -1,0 +1,11 @@
+# Shop-Secrets und lokale Zustandsdaten niemals committen
+.env
+.env.*
+!.env.example
+private-data/
+node_modules/
+*.log
+.DS_Store
+# Private Download-Dateien im Git-Repository vermeiden
+bundle/*.jar
+*.bak

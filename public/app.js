@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-const productNames = {client:'KngArtusClient',texture:'6-in-1 Texture Pack + X-Ray'};
+const productNames = {client:'KngArtusClient',texture:'5er-Texture-Pack-Bundle (NEU)'};
 let currentProduct='client';
 const requestStorage = product => 'kng-request-'+product;
 function selectProduct(product){

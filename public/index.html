@@ -39,10 +39,10 @@ section{margin-bottom:45px}.foot{border-top:1px solid #254332;padding:25px 0;col
 <article id="product-client" class="card product-card selected"><div class="icon">🎮</div><h2>KngArtusClient</h2>
 <p>Experimenteller Fabric-Client für Minecraft Java 26.3 · JAR-Datei. Diese Version wurde nicht vollständig im Spiel getestet.</p>
 <p class="pill">Kostenlos mit Freischalt-Key</p><button type="button" class="pick-product" data-pick="client">Client auswählen</button></article>
-<article id="product-texture" class="card product-card"><div class="icon">🎨</div><h2>6-in-1 Texture Pack + X-Ray</h2>
-<p>Loading Screen, Zombie, Dark Lime GUI, Voice, Werkzeuge/Totem und X-Ray in einer ZIP. Ohne den problematischen Cape-Shader.</p>
+<article id="product-texture" class="card product-card"><div class="icon">🎨</div><h2>5er-Texture-Pack-Bundle (NEU)</h2>
+<p>5 Packs in einer ZIP: My Loading Screen, Zombie Ein_DonutYT, Dark Lime GUI, das neue My Voice Pack und das neue MyTexturePack. Ohne X-Ray und ohne Cape.</p>
 <p class="pill">Kostenlos mit Freischalt-Key</p><button type="button" class="pick-product" data-pick="texture">Texture Pack auswählen</button></article>
-</div><p class="note">X-Ray nur im Einzelspieler oder auf Servern, die es ausdrücklich erlauben. Verteile nur Packs, für die du die nötigen Rechte besitzt.</p></section>
+</div><p class="note">Ohne X-Ray und ohne My Cape. Verteile nur Packs, für die du die nötigen Rechte besitzt. Die Kompatibilität wurde nicht im Spiel getestet.</p></section>
 <section class="cards"><article class="card"><div class="icon">🔑</div><h2>Key einlösen</h2><p>Du hast einen Key über WhatsApp bekommen? Gib ihn ein, um den Download freizuschalten.</p>
 <form id="key-form"><label for="key-input">Dein Zugangscode</label><input id="key-input" placeholder="KNG-XXXXXX-XXXXXX-XXXXXX-XXXXXX" autocomplete="off" required><button type="submit">Key einlösen</button></form><div id="key-msg"></div></article>
 <article class="card"><div class="icon">📩</div><h2>Persönliche Anfrage</h2><p>Schicke eine Freigabeanfrage. Der Admin sieht sie in seinem privaten Bereich und kann sie bestätigen oder ablehnen.</p>
@@ -52,10 +52,10 @@ section{margin-bottom:45px}.foot{border-top:1px solid #254332;padding:25px 0;col
 <section class="card"><h2>Dein Download: <span id="selected-product">KngArtusClient</span></h2><p>Für jedes Produkt brauchst du einen passenden Key oder eine eigene Freigabe. Die Datei wird nur nach Freischaltung angeboten.</p><div id="file-status" class="note">Status wird geladen…</div><div style="margin-top:18px"><button id="download" disabled>JAR-Datei herunterladen</button></div></section>
 <section class="card admin hidden" id="admin-panel"><h2>Admin-Bereich</h2>
 <div id="login-panel"><p>Nur der Betreiber kann Keys erstellen und Anfragen bearbeiten.</p><form id="login-form"><label for="admin-pass">Admin-Passwort</label><input id="admin-pass" type="password" autocomplete="current-password" required><button type="submit">Anmelden</button></form></div>
-<div id="admin-content" class="hidden"><div class="cards"><div><h2>Neue Keys</h2><form id="generate-form"><label for="admin-key-product">Produkt für die Keys</label><select id="admin-key-product"><option value="client">KngArtusClient</option><option value="texture">6-in-1 Texture Pack + X-Ray</option></select>
+<div id="admin-content" class="hidden"><div class="cards"><div><h2>Neue Keys</h2><form id="generate-form"><label for="admin-key-product">Produkt für die Keys</label><select id="admin-key-product"><option value="client">KngArtusClient</option><option value="texture">5er-Texture-Pack-Bundle (NEU)</option></select>
 <label for="key-count">Anzahl (1–20)</label><input id="key-count" type="number" min="1" max="20" value="1"><button type="submit">Keys generieren</button></form><pre class="details hidden" id="new-keys"></pre><p class="note">Keys werden nur einmal angezeigt. Kopiere sie für WhatsApp.</p></div>
 <div><h2>JAR hochladen</h2><p>Die Dateien werden geschützt auf dem Server gespeichert, nicht öffentlich auf GitHub.</p>
-<label for="admin-upload-product">Produkt auswählen</label><select id="admin-upload-product"><option value="client">KngArtusClient (.jar)</option><option value="texture">6-in-1 Texture Pack (.zip)</option></select>
+<label for="admin-upload-product">Produkt auswählen</label><select id="admin-upload-product"><option value="client">KngArtusClient (.jar)</option><option value="texture">5er-Texture-Pack-Bundle (.zip)</option></select>
 <input type="file" id="jar-picker" accept=".jar,.zip"><button id="upload-button">Produktdatei hochladen</button></div></div>
 <h2>Offene Anfragen</h2><div id="pending-list"></div>
 <h2 style="margin-top:25px">Keys</h2><div id="keys-list"></div></div>

@@ -8,7 +8,8 @@ const secret = process.env.ADMIN_PASSWORD || '';
 const dataDir = path.resolve(process.env.DATA_DIR || './private-data');
 fs.mkdirSync(dataDir, { recursive:true, mode:0o700 });
 const storeFile = path.join(dataDir,'store.json');
-const jarFile = path.join(dataDir,'client.jar');
+const downloadFiles = { client:path.join(dataDir,'client.jar'), texture:path.join(dataDir,'bundle-xray.zip') };
+const downloadNames = { client:'KngArtusClient-EXPERIMENTAL-mc26.3.jar', texture:'KngArtusClient-6-in-1-TexturePack-MIT-XRAY-mc26.3.zip' };
 const state = fs.existsSync(storeFile) ? JSON.parse(fs.readFileSync(storeFile,'utf8')) : { keys:[], grants:[], requests:[] };
 state.keys ||= []; state.grants ||= []; state.requests ||= [];
 const hash = s => crypto.createHash('sha256').update(String(s)).digest('hex');
@@ -26,14 +27,15 @@ function admin(req){
   if(!payload || !sig || !equal(sig,crypto.createHmac('sha256',secret).update(payload).digest('base64url')))return false;
   try { return JSON.parse(Buffer.from(payload,'base64url').toString()).expires>Date.now(); } catch { return false; }
 }
-function access(req){
-  const [id,key] = (cookies(req).access||'').split('.');
-  return !!(id && key && state.grants.some(g=>g.id===id && equal(g.hash,hash(key))));
+function access(req,product='client'){
+  const cs=cookies(req);
+  const [id,key] = (cs['access-'+product]||(product==='client'?cs.access:'')||'').split('.');
+  return !!(id && key && state.grants.some(g=>g.id===id && (g.product||'client')===product && equal(g.hash,hash(key))));
 }
-function grant(req,res){
+function grant(req,res,product='client'){
   const id=rand(12), key=rand(32);
-  state.grants.push({id,hash:hash(key),created:Date.now()}); save();
-  setCookie(req,res,'access',id+'.'+key,30*86400);
+  state.grants.push({id,hash:hash(key),product,created:Date.now()}); save();
+  setCookie(req,res,'access-'+product,id+'.'+key,30*86400);
 }
 async function getBody(req,max=20000){
   const chunks=[];let bytes=0;
@@ -55,44 +57,58 @@ const mime = p => p.endsWith('.css')?'text/css':p.endsWith('.js')?'application/j
 const publicly = {'/':'public/index.html','/index.html':'public/index.html','/app.js':'public/app.js'};
 const server=http.createServer(async(req,res)=>{
   try {
-    const pathname=new URL(req.url,'http://local').pathname;
+    const requestUrl=new URL(req.url,'http://local');
+    const pathname=requestUrl.pathname;
+    const product=requestUrl.searchParams.get('product')==='texture'?'texture':'client';
     if(req.method==='GET' && publicly[pathname]){
       const file=path.resolve(publicly[pathname]);
       res.writeHead(200,{'Content-Type':mime(file)+'; charset=utf-8','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data:; base-uri 'self'; frame-ancestors 'none'"});
       fs.createReadStream(file).pipe(res);return;
     }
     if(req.method==='GET'&&pathname==='/health')return reply(res,200,{ok:true});
-    if(req.method==='GET'&&pathname==='/api/info')return reply(res,200,{version:'1.2.1-experimental',file:fs.existsSync(jarFile),access:access(req),pendingAllowed:true});
+    if(req.method==='GET'&&pathname==='/api/info')return reply(res,200,{
+      version:'1.2.1-experimental',
+      file:fs.existsSync(downloadFiles.client),access:access(req),
+      files:{client:fs.existsSync(downloadFiles.client),texture:fs.existsSync(downloadFiles.texture)},
+      accesses:{client:access(req,'client'),texture:access(req,'texture')},pendingAllowed:true
+    });
     if(req.method==='GET'&&pathname==='/api/download'){
-      if(!access(req))return reply(res,403,{error:'Bitte zuerst deinen Key einlösen oder eine Freigabe erhalten.'});
-      if(!fs.existsSync(jarFile))return reply(res,404,{error:'JAR-Datei wurde noch nicht vom Admin hochgeladen.'});
-      return void (res.writeHead(200,{'Content-Type':'application/java-archive','Content-Disposition':'attachment; filename="KngArtusClient-1.2.1-EXPERIMENTAL-mc26.3.jar"','Cache-Control':'private, no-store','Content-Length':fs.statSync(jarFile).size}),fs.createReadStream(jarFile).pipe(res));
+      if(!access(req,product))return reply(res,403,{error:'Für dieses Produkt brauchst du einen eigenen Key oder eine Freigabe.'});
+      const target=downloadFiles[product];
+      if(!fs.existsSync(target))return reply(res,404,{error:'Die Produktdatei wurde noch nicht vom Admin hochgeladen.'});
+      res.writeHead(200,{'Content-Type':product==='texture'?'application/zip':'application/java-archive',
+        'Content-Disposition':'attachment; filename="'+downloadNames[product]+'"','Cache-Control':'private, no-store',
+        'X-Content-Type-Options':'nosniff','Content-Length':fs.statSync(target).size});
+      fs.createReadStream(target).pipe(res);return;
     }
     if(req.method!=='GET'&&!originOK(req))return reply(res,403,{error:'Anfrageherkunft nicht erlaubt.'});
     if(req.method==='POST'&&pathname==='/api/redeem'){
       if(limit(req,'redeem',8))return reply(res,429,{error:'Zu viele Versuche.'});
       const b=JSON.parse((await getBody(req)).toString()||'{}');
       const key=String(b.key||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
-      const record=state.keys.find(k=>!k.used&&!k.revoked&&equal(k.hash,hash(key)));
+      const product=b.product==='texture'?'texture':'client';
+      const record=state.keys.find(k=>!k.used&&!k.revoked&&(k.product||'client')===product&&equal(k.hash,hash(key)));
       if(!record)return reply(res,403,{error:'Key ungültig oder bereits verwendet.'});
-      record.used=Date.now();grant(req,res);return reply(res,200,{ok:true});
+      record.used=Date.now();grant(req,res,product);return reply(res,200,{ok:true,product});
     }
     if(req.method==='POST'&&pathname==='/api/request'){
       if(limit(req,'request',4,3600000))return reply(res,429,{error:'Zu viele Anfragen.'});
       const b=JSON.parse((await getBody(req)).toString()||'{}');
       const name=String(b.name||'').trim().slice(0,32);
+      const product=b.product==='texture'?'texture':'client';
       if(!/^[\p{L}\p{N} ._-]{2,32}$/u.test(name))return reply(res,400,{error:'Bitte einen Spitznamen von 2–32 Zeichen eingeben.'});
       const id='KNG-'+crypto.randomBytes(5).toString('hex').toUpperCase(), token=rand(24);
-      state.requests.push({id,name,tokenHash:hash(token),status:'pending',created:Date.now()});save();
-      return reply(res,200,{id,token,status:'pending'});
+      state.requests.push({id,name,product,tokenHash:hash(token),status:'pending',created:Date.now()});save();
+      return reply(res,200,{id,token,product,status:'pending'});
     }
     if(req.method==='POST'&&pathname==='/api/check'){
       if(limit(req,'check',60,3600000))return reply(res,429,{error:'Zu viele Prüfungen.'});
       const b=JSON.parse((await getBody(req)).toString()||'{}');
       const record=state.requests.find(x=>x.id===b.id&&equal(x.tokenHash,hash(b.token||'')));
       if(!record)return reply(res,404,{error:'Anfrage nicht gefunden.'});
-      if(record.status==='approved'&&!record.claimed){record.claimed=Date.now();grant(req,res);}
-      return reply(res,200,{status:record.status,access:access(req)});
+      if(record.status==='approved'&&!record.claimed){record.claimed=Date.now();grant(req,res,record.product||'client');}
+      const grantedProduct=record.product||'client';
+      return reply(res,200,{status:record.status,product:grantedProduct,access:access(req,grantedProduct)});
     }
     if(req.method==='POST'&&pathname==='/api/admin/login'){
       if(limit(req,'login',6))return reply(res,429,{error:'Zu viele Login-Versuche.'});
@@ -105,14 +121,17 @@ const server=http.createServer(async(req,res)=>{
     if(pathname.startsWith('/api/admin/')){
       if(!admin(req))return reply(res,401,{error:'Admin-Anmeldung erforderlich.'});
       if(req.method==='GET'&&pathname==='/api/admin/status')return reply(res,200,{
-        requests:state.requests.slice().reverse().map(x=>({id:x.id,name:x.name,status:x.status,created:x.created})),
-        keys:state.keys.map(x=>({id:x.id,used:!!x.used,revoked:!!x.revoked})),file:fs.existsSync(jarFile)
+        requests:state.requests.slice().reverse().map(x=>({id:x.id,name:x.name,product:x.product||'client',status:x.status,created:x.created})),
+        keys:state.keys.map(x=>({id:x.id,product:x.product||'client',used:!!x.used,revoked:!!x.revoked})),
+        file:fs.existsSync(downloadFiles.client),
+        files:{client:fs.existsSync(downloadFiles.client),texture:fs.existsSync(downloadFiles.texture)}
       });
       if(req.method==='POST'&&pathname==='/api/admin/keys'){
         const b=JSON.parse((await getBody(req)).toString()||'{}'),count=Math.min(20,Math.max(1,Number(b.count)||1));
+        const product=b.product==='texture'?'texture':'client';
         const out=[];
-        for(let i=0;i<count;i++){const key='KNG-'+crypto.randomBytes(12).toString('hex').toUpperCase().match(/.{1,6}/g).join('-');state.keys.push({id:rand(8),hash:hash(key.replace(/-/g,'')),used:null,revoked:false});out.push(key);}
-        save();return reply(res,200,{keys:out});
+        for(let i=0;i<count;i++){const key='KNG-'+crypto.randomBytes(12).toString('hex').toUpperCase().match(/.{1,6}/g).join('-');state.keys.push({id:rand(8),product,hash:hash(key.replace(/-/g,'')),used:null,revoked:false});out.push(key);}
+        save();return reply(res,200,{keys:out,product});
       }
       if(req.method==='POST'&&pathname==='/api/admin/decide'){
         const b=JSON.parse((await getBody(req)).toString()||'{}');
@@ -126,8 +145,9 @@ const server=http.createServer(async(req,res)=>{
         if(req.headers['content-type']!=='application/octet-stream')return reply(res,415,{error:'Dateityp nicht erlaubt.'});
         const file=await getBody(req,35000000);
         if(file.length<100||file.slice(0,2).toString()!=='PK')return reply(res,400,{error:'Nur JAR/ZIP-Dateien.'});
-        const temp=jarFile+'.tmp';fs.writeFileSync(temp,file,{mode:0o600});fs.renameSync(temp,jarFile);
-        return reply(res,200,{ok:true,size:file.length});
+        const target=downloadFiles[product],temp=target+'.tmp';
+        fs.writeFileSync(temp,file,{mode:0o600});fs.renameSync(temp,target);
+        return reply(res,200,{ok:true,product,size:file.length});
       }
     }
     reply(res,404,{error:'Nicht gefunden.'});

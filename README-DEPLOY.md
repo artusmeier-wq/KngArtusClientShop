@@ -15,3 +15,13 @@ Dieses Repository ist **PUBLIC**. Die geschützte JAR, deine Passwörter und geh
 Render Free bietet **keinen persistenten Datenspeicher**. Bei einem Neustart oder Deploy können JAR, Einmal-Keys und Anfragen verloren gehen. Für einen zuverlässigen dauerhaften Shop braucht man persistenten Speicher und ggf. einen kostenpflichtigen Tarif; bitte vor Kosten die Zustimmung eines Erziehungsberechtigten einholen. Ein fester Link bedeutet nicht automatisch dauerhaft verfügbare Daten.
 
 Der Client selbst ist eine **experimentelle, nicht im echten Minecraft 26.3 getestete** JAR. Zuerst in einem separaten Spielprofil testen. Kein offizielles Minecraft-Produkt. Vor öffentlichem Betrieb die rechtlichen Betreiberinformationen und die Datenschutzanforderungen prüfen.
+
+
+## Zweites Produkt: Texture Pack mit X-Ray
+- Im Shop erscheinen zwei Produkte: **KngArtusClient (JAR)** und **6-in-1 Texture Pack + X-Ray (ZIP)**.
+- Das Pack enthält Loading Screen, Zombie, Dark Lime GUI, Voice, MyTexturePack und X-Ray; **My Cape ist nicht enthalten**.
+- Im Admin-Bereich unter **JAR hochladen** das Produkt **Texture Pack** wählen und die Datei `KngArtusClient-6-in-1-TexturePack-MIT-XRAY-mc26.3.zip` hochladen.
+- Für beide Produkte getrennte einmalige Schlüssel erzeugen; auch Freigabeanfragen gelten jeweils nur für das gewählte Produkt.
+- Beide Produkte werden **kostenlos** per Key oder Admin-Freigabe geteilt. Zahlungsfunktionen sind nicht enthalten. Rechte an allen verwendeten Packs vor Weitergabe prüfen.
+- X-Ray nur auf Servern einsetzen, die es ausdrücklich erlauben. X-Ray-Effekt ist technisch nicht im echten Minecraft 26.3 getestet.
+- Nach **jedem kostenlosen Render-Neudeploy** hochgeladene ZIP/JAR, Keys und Anfragen prüfen. Ohne persistente Datenbank und Dateispeicher können sie verschwinden.
